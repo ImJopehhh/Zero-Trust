@@ -1,0 +1,26 @@
+# Zero Trust - Runtime Protection Configuration
+
+# Discord Webhook URL for security alerts
+# Leave empty to disable.
+discord-webhook-url: ""
+
+# List of Trusted Admins (Names or UUIDs)
+# Only these players are allowed to have OP or use blocked commands.
+trusted-admins:
+  - "Notch"
+  - "jeb_"
+
+# Commands that are restricted to Trusted Admins only
+blocked-commands:
+  - "/stop"
+  - "/reload"
+  - "/restart"
+  - "/rl"
+  - "/plugman"
+  - "/op"
+  - "/deop"
+  - "/minecraft:stop"
+  - "/bukkit:reload"
+
+# Anti-Nuker / FastBreak Settings
+max-blocks-per-second: 20

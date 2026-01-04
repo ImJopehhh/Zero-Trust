@@ -1,0 +1,10 @@
+name: ZeroTrust
+version: '1.0.0'
+main: org.mapplestudio.zeroTrust.ZeroTrust
+api-version: '1.21'
+load: STARTUP
+commands:
+  zt:
+    description: ZeroTrust administration commands
+    usage: /zt <trust> [plugin]
+    permission: zerotrust.admin
