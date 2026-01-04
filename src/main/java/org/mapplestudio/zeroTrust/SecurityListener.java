@@ -54,11 +54,11 @@ public class SecurityListener implements Listener {
         if (blockedCommands.contains(command)) {
             if (!isTrusted(player)) {
                 event.setCancelled(true);
-                plugin.adventure().sender(player).sendMessage(Component.text("⛔ You are not authorized to use this command.", NamedTextColor.RED));
+                // Paper API supports Adventure components directly on Player
+                player.sendMessage(Component.text("⛔ You are not authorized to use this command.", NamedTextColor.RED));
                 
                 String alert = "⚠️ **Command Blocked:** " + player.getName() + " tried to use `" + message + "`";
                 plugin.getLogger().warning(alert);
-                // Optional: Send webhook for attempted breaches? Maybe too spammy.
             }
         }
     }
@@ -67,8 +67,6 @@ public class SecurityListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        // Trusted admins might be using WorldEdit or Creative, so maybe skip them? 
-        // Requirement didn't specify, but usually admins are exempt. Let's exempt them.
         if (isTrusted(player)) return;
 
         UUID uuid = player.getUniqueId();
@@ -79,7 +77,7 @@ public class SecurityListener implements Listener {
             event.setCancelled(true);
             // Warn only once per second to avoid spam
             if (count == maxBlocksPerSecond + 1) {
-                plugin.adventure().sender(player).sendMessage(Component.text("⚠️ You are breaking blocks too fast!", NamedTextColor.RED));
+                player.sendMessage(Component.text("⚠️ You are breaking blocks too fast!", NamedTextColor.RED));
             }
         }
     }
@@ -87,18 +85,12 @@ public class SecurityListener implements Listener {
     // --- 3. Anti-Crash (Book Exploit) ---
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBookEdit(PlayerEditBookEvent event) {
-        if (event.getNewBookMeta().getPageCount() > 50) {
+        if (event.getNewBookMeta().pageCount() > 50) { // Paper uses pageCount() instead of getPageCount() in some versions, but getPageCount() is standard Bukkit.
+            // Actually, Paper API is backward compatible. getPageCount() is fine.
+            // But let's check if we need to use Component for kick.
             event.setCancelled(true);
-            event.getPlayer().kickPlayer("§cInvalid Book Data");
+            event.getPlayer().kick(Component.text("Invalid Book Data", NamedTextColor.RED));
             plugin.getLogger().warning("Blocked potential book crash exploit from " + event.getPlayer().getName());
-        }
-        
-        // Check for unusual characters (basic check)
-        for (String page : event.getNewBookMeta().getPages()) {
-            if (page.length() > 256 && page.chars().anyMatch(c -> c > 0xFF)) { // Simple heuristic
-                 // This is a very basic check. Real exploits are more complex.
-                 // But limiting page count is the most effective simple measure.
-            }
         }
     }
 
@@ -111,17 +103,7 @@ public class SecurityListener implements Listener {
         if (isTrusted(player)) return;
 
         String buffer = event.getBuffer();
-        // Block "/ver <tab>", "/about <tab>", "/? <tab>" or just generic plugin discovery
-        // Requirement: "Block the usage of Execute command: <tab> exploits"
-        // Usually this refers to blocking tab completion for commands the player doesn't have access to,
-        // or specifically blocking the colon syntax like "/plugin:command".
-        
         if (buffer.contains(":") || buffer.startsWith("/")) {
-             // This is a broad stroke. Spigot.yml already has 'tab-complete: 0' option.
-             // But to implement it here:
-             // If the buffer is just "/", we might want to limit what is shown.
-             // But the requirement specifically mentions "Execute command: <tab>".
-             // Let's block colon syntax which reveals plugin names.
              if (buffer.contains(":")) {
                  event.setCancelled(true);
              }

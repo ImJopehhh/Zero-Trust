@@ -38,14 +38,6 @@
             <goals>
               <goal>shade</goal>
             </goals>
-            <configuration>
-              <relocations>
-                <relocation>
-                  <pattern>net.kyori.adventure</pattern>
-                  <shadedPattern>org.mapplestudio.zeroTrust.libs.adventure</shadedPattern>
-                </relocation>
-              </relocations>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -60,8 +52,8 @@
 
   <repositories>
       <repository>
-        <id>spigotmc-repo</id>
-        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        <id>papermc-repo</id>
+        <url>https://repo.papermc.io/repository/maven-public/</url>
       </repository>
       <repository>
         <id>sonatype</id>
@@ -71,22 +63,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
       <version>1.21-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>net.kyori</groupId>
-      <artifactId>adventure-platform-bukkit</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>net.kyori</groupId>
-      <artifactId>adventure-text-minimessage</artifactId>
-      <version>4.14.0</version>
-    </dependency>
-    <!-- Gson is provided by Spigot, but we can add it as provided scope to be safe for IDE resolution -->
+    <!-- Gson is provided by Paper, but we can add it as provided scope to be safe for IDE resolution -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>

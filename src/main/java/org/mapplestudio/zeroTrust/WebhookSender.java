@@ -59,8 +59,6 @@ public class WebhookSender {
         if (plugin.isEnabled()) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
         } else {
-            // If plugin is disabling, we might not be able to schedule async tasks reliably.
-            // We'll try to run it in a new thread directly.
             new Thread(task).start();
         }
     }
