@@ -85,9 +85,7 @@ public class SecurityListener implements Listener {
     // --- 3. Anti-Crash (Book Exploit) ---
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBookEdit(PlayerEditBookEvent event) {
-        if (event.getNewBookMeta().pageCount() > 50) { // Paper uses pageCount() instead of getPageCount() in some versions, but getPageCount() is standard Bukkit.
-            // Actually, Paper API is backward compatible. getPageCount() is fine.
-            // But let's check if we need to use Component for kick.
+        if (event.getNewBookMeta().getPageCount() > 50) {
             event.setCancelled(true);
             event.getPlayer().kick(Component.text("Invalid Book Data", NamedTextColor.RED));
             plugin.getLogger().warning("Blocked potential book crash exploit from " + event.getPlayer().getName());
