@@ -28,23 +28,42 @@ public final class ZeroTrust extends JavaPlugin {
         // Runs every 100 ticks (5 seconds)
         new PermissionGuard(this).runTaskTimer(this, 100L, 100L);
 
+        // 5. Register Command
+        getCommand("zt").setExecutor(new ZeroTrustCommand(this));
+
         getLogger().info("Zero Trust - Runtime Protection Active.");
     }
 
     @Override
     public void onDisable() {
         // 1. Self-Defense with Webhook (The "Dead Man's Trigger")
-        // Paper API provides getServer().isStopping()
         
         boolean isServerStopping = false;
+        
+        // Method 1: Check Paper API
         try {
             if (getServer().isStopping()) {
                 isServerStopping = true;
             }
         } catch (NoSuchMethodError e) {
-            // Fallback for older versions or if method missing (unlikely in Paper 1.21)
-            if (Thread.currentThread().getName().toLowerCase().contains("shutdown")) {
-                isServerStopping = true;
+            // Ignore
+        }
+
+        // Method 2: Check Thread Name (Standard Spigot/Paper behavior)
+        // When stopping, the thread is usually "Server Shutdown Thread" or similar.
+        if (!isServerStopping) {
+             String threadName = Thread.currentThread().getName().toLowerCase();
+             if (threadName.contains("shutdown") || threadName.contains("stop")) {
+                 isServerStopping = true;
+             }
+        }
+
+        if (!isServerStopping) {
+            for (Thread t : Thread.getAllStackTraces().keySet()) {
+                if (t.getName().toLowerCase().contains("shutdown")) {
+                    isServerStopping = true;
+                    break;
+                }
             }
         }
 

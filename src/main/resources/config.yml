@@ -21,6 +21,8 @@ blocked-commands:
   - "/deop"
   - "/minecraft:stop"
   - "/bukkit:reload"
+  - "/minecraft:op"
+  - "/minecraft:deop"
 
 # Anti-Nuker / FastBreak Settings
 max-blocks-per-second: 20

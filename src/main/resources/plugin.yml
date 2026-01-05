@@ -6,5 +6,5 @@ load: STARTUP
 commands:
   zt:
     description: ZeroTrust administration commands
-    usage: /zt <trust> [plugin]
+    usage: /zt reload
     permission: zerotrust.admin
